@@ -1,5 +1,6 @@
 import sqlite3
 from flask import Flask, request, jsonify, render_template, session, redirect, url_for
+from flask_cors import CORS
 
 app = Flask(__name__)
 app.secret_key = '5rps'
@@ -20,6 +21,11 @@ def initialize_database():
     conn.close()
 
 # Function to handle user signup
+    
+@app.route('/')
+def home():
+    return render_template('index.html')
+
 @app.route('/signup/user', methods=['POST'])
 def user_signup():
     if request.method == 'POST':
@@ -141,7 +147,7 @@ def get_user_prescriptions(user_id):
 @app.route('/prescriptions', methods=['GET'])
 def prescriptions():
     if 'user_id' not in session:
-        return redirect(url_for('login'))  # Redirect user to login page if not logged in
+        return redirect(url_for('user_login'))  # Redirect user to login page if not logged in
 
     user_id = session['user_id']
     user_prescriptions = get_user_prescriptions(user_id)
@@ -153,7 +159,7 @@ def prescriptions():
 def submit_prescription():
     if request.method == "POST":
         if 'user_id' not in session:
-            return redirect(url_for('login'))  # Redirect user to login page if not logged in
+            return redirect(url_for('user_login'))  # Redirect user to login page if not logged in
 
         user_id = session['user_id']
         medicines = request.form.getlist('medicine[]')
