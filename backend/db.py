@@ -60,7 +60,7 @@ def doctor_signup():
         finally:
             conn.close()
     else:
-        return render_template('signup.html')  # You can change this to render a different HTML template for doctor signup
+        return render_template('signup.html')
 
 if __name__ == '__main__':
     initialize_database()
