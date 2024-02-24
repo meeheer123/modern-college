@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dynamic Form</title>
+</head>
+<body>
+  <form id="medicineForm">
+    <div id="inputsContainer">
+      <!-- Initial input fields -->
+      <div>
+        <input type="text" name="medicine[]" placeholder="Medicine Name">
+        <input type="text" name="time[]" placeholder="Time">
+      </div>
+    </div>
+    <button type="button" onclick="addInputFields()">+</button>
+    <button type="submit">Submit</button>
+  </form>
+
+  <script>
+    function addInputFields() {
+      // Create a new div element
+      var newDiv = document.createElement("div");
+
+      // Add input fields for medicine name and time
+      newDiv.innerHTML = `
+        <input type="text" name="medicine[]" placeholder="Medicine Name">
+        <input type="text" name="time[]" placeholder="Time">
+      `;
+
+      // Append the new div to the inputs container
+      document.getElementById("inputsContainer").appendChild(newDiv);
+    }
+  </script>
+</body>
+</html>
