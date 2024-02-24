@@ -2,7 +2,7 @@ import sqlite3
 from flask import Flask, request, jsonify, render_template, session, redirect, url_for
 
 app = Flask(__name__)
-
+app.secret_key = '5rps'
 # Function to initialize the database
 def initialize_database():
     conn = sqlite3.connect('healthcare.db')
