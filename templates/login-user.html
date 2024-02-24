@@ -55,6 +55,7 @@
             .then(response => {
                 if (response.ok) {
                     console.log('User logged in successfully');
+                    window.location.href = '/homepage_user';
                     // Redirect or do something else upon successful login
                 } else {
                     console.error('Error:', response.statusText);

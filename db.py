@@ -100,11 +100,15 @@ def user_login():
         conn.close()
         if user:
             session['user_id'] = user[0]  # Store user's ID in the session
-            return jsonify({'message': 'User logged in successfully'}), 200
+            return render_template('hii.html')
         else:
-            return jsonify({'error': 'Invalid username or password'}), 401
+            return render_template('login-user.html', message='Invalid username or password')
     else:
         return render_template('login-user.html')
+    
+@app.route('/homepage_user', methods=['GET', 'POST'])
+def homepage_user():
+    return render_template('hii.html')
 
 # Function to handle doctor login
 @app.route('/login/doctor', methods=['GET', 'POST'])
