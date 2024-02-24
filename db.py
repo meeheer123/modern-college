@@ -50,7 +50,7 @@ def user_signup():
         finally:
             conn.close()
     else:
-        return jsonify({'error': 'Method not allowed'}), 405
+        return render_template('signup-user.html')
 
 # Function to handle doctor signup
 @app.route('/signup/doctor', methods=['POST'])
@@ -85,7 +85,7 @@ def doctor_signup():
         finally:
             conn.close()
     else:
-        return jsonify({'error': 'Method not allowed'}), 405
+        return render_template('signup-doctor.html')
     
 @app.route('/login/user', methods=['POST'])
 def user_login():
@@ -104,7 +104,7 @@ def user_login():
         else:
             return jsonify({'error': 'Invalid username or password'}), 401
     else:
-        return render_template('hii.html')
+        return render_template('login-user.html')
 
 # Function to handle doctor login
 @app.route('/login/doctor', methods=['POST'])
