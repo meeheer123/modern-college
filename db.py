@@ -98,7 +98,7 @@ def user_login():
         else:
             return jsonify({'error': 'Invalid username or password'}), 401
     else:
-        return jsonify({'error': 'Method not allowed'}), 405
+        return render_template('hii.html')
 
 # Function to handle doctor login
 @app.route('/login/doctor', methods=['POST'])
