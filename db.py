@@ -87,7 +87,7 @@ def doctor_signup():
     else:
         return render_template('signup-doctor.html')
     
-@app.route('/login/user', methods=['POST'])
+@app.route('/login/user', methods=['GET', 'POST'])
 def user_login():
     if request.method == 'POST':
         data = request.get_json()
@@ -107,7 +107,7 @@ def user_login():
         return render_template('login-user.html')
 
 # Function to handle doctor login
-@app.route('/login/doctor', methods=['POST'])
+@app.route('/login/doctor', methods=['GET', 'POST'])
 def doctor_login():
     if request.method == 'POST':
         data = request.get_json()
@@ -124,7 +124,7 @@ def doctor_login():
         else:
             return jsonify({'error': 'Invalid username or password'}), 401
     else:
-        return render_template('login-doctor.html')
+        return render_template('login-docter.html')
 
 # Logout route
 @app.route('/logout')
