@@ -14,6 +14,8 @@ def initialize_database():
                  (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, password TEXT, age INTEGER, 
                  speciality TEXT, phonenumber TEXT, experience TEXT, education TEXT, 
                  username TEXT UNIQUE, email TEXT UNIQUE, address TEXT)''')
+    c.execute('''CREATE TABLE IF NOT EXISTS prescriptions
+                 (id INTEGER PRIMARY KEY AUTOINCREMENT, user_id INTEGER, medicine TEXT, time TEXT)''')
     conn.commit()
     conn.close()
 
@@ -124,6 +126,21 @@ def logout():
     session.pop('user_id', None)
     session.pop('doctor_id', None)
     return jsonify({'message': 'Logged out successfully'}), 200
+
+@app.route('/submit_prescription', methods=['POST'])
+def submit_prescription():
+    if request.method == 'POST':
+        # Get the list of medicine names and times from the form data
+        medicines = request.form.getlist('medicine[]')
+        times = request.form.getlist('time[]')
+
+        # Process the data as needed
+        for med, time in zip(medicines, times):
+            print("Medicine:", med, "Time:", time)
+
+        # You can also store the data in the database or perform other operations
+
+        return jsonify({'message': 'Form submitted successfully'}), 200
 
 if __name__ == '__main__':
     initialize_database()
