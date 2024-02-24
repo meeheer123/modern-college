@@ -1,5 +1,5 @@
 import sqlite3
-from flask import Flask, request, jsonify, render_template
+from flask import Flask, request, jsonify, render_template, session, redirect, url_for
 
 app = Flask(__name__)
 
@@ -78,6 +78,52 @@ def doctor_signup():
             conn.close()
     else:
         return jsonify({'error': 'Method not allowed'}), 405
+    
+@app.route('/login/user', methods=['POST'])
+def user_login():
+    if request.method == 'POST':
+        data = request.get_json()
+        username = data.get('username')
+        password = data.get('password')
+        conn = sqlite3.connect('healthcare.db')
+        c = conn.cursor()
+        c.execute("SELECT * FROM users WHERE username=? AND password=?", (username, password))
+        user = c.fetchone()
+        conn.close()
+        if user:
+            session['user_id'] = user[0]  # Store user's ID in the session
+            return jsonify({'message': 'User logged in successfully'}), 200
+        else:
+            return jsonify({'error': 'Invalid username or password'}), 401
+    else:
+        return jsonify({'error': 'Method not allowed'}), 405
+
+# Function to handle doctor login
+@app.route('/login/doctor', methods=['POST'])
+def doctor_login():
+    if request.method == 'POST':
+        data = request.get_json()
+        username = data.get('username')
+        password = data.get('password')
+        conn = sqlite3.connect('healthcare.db')
+        c = conn.cursor()
+        c.execute("SELECT * FROM doctors WHERE username=? AND password=?", (username, password))
+        doctor = c.fetchone()
+        conn.close()
+        if doctor:
+            session['doctor_id'] = doctor[0]  # Store doctor's ID in the session
+            return jsonify({'message': 'Doctor logged in successfully'}), 200
+        else:
+            return jsonify({'error': 'Invalid username or password'}), 401
+    else:
+        return jsonify({'error': 'Method not allowed'}), 405
+
+# Logout route
+@app.route('/logout')
+def logout():
+    session.pop('user_id', None)
+    session.pop('doctor_id', None)
+    return jsonify({'message': 'Logged out successfully'}), 200
 
 if __name__ == '__main__':
     initialize_database()
