@@ -124,7 +124,7 @@ def doctor_login():
         else:
             return jsonify({'error': 'Invalid username or password'}), 401
     else:
-        return jsonify({'error': 'Method not allowed'}), 405
+        return render_template('login-doctor.html')
 
 # Logout route
 @app.route('/logout')
@@ -173,7 +173,7 @@ def submit_prescription():
         conn.close()
         return [medicines, times] #return html here
     else:
-        return "hi"
+        return render_template('prescription.html')
 
 # Route to delete a prescription
 @app.route('/prescriptions/<int:prescription_id>', methods=['DELETE'])
