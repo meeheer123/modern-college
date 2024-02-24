@@ -127,21 +127,62 @@ def logout():
     session.pop('doctor_id', None)
     return jsonify({'message': 'Logged out successfully'}), 200
 
-@app.route('/submit_prescription', methods=['POST'])
+# Function to fetch user's prescriptions from the database
+def get_user_prescriptions(user_id):
+    conn = sqlite3.connect('healthcare.db')
+    c = conn.cursor()
+    c.execute('SELECT * FROM prescriptions WHERE user_id=?', (user_id,))
+    prescriptions = c.fetchall()
+    conn.close()
+    return prescriptions
+
+# Route to display user's prescriptions
+# Route to display user's prescriptions
+@app.route('/prescriptions', methods=['GET'])
+def prescriptions():
+    if 'user_id' not in session:
+        return redirect(url_for('login'))  # Redirect user to login page if not logged in
+
+    user_id = session['user_id']
+    user_prescriptions = get_user_prescriptions(user_id)
+    print(user_prescriptions)
+    return render_template('prescription.html', user_prescriptions=user_prescriptions)
+
+# Route to submit a new prescription
+@app.route('/submit_prescription', methods=['POST', 'GET'])
 def submit_prescription():
-    if request.method == 'POST':
-        # Get the list of medicine names and times from the form data
+    if request.method == "POST":
+        if 'user_id' not in session:
+            return redirect(url_for('login'))  # Redirect user to login page if not logged in
+
+        user_id = session['user_id']
         medicines = request.form.getlist('medicine[]')
         times = request.form.getlist('time[]')
 
-        # Process the data as needed
-        for med, time in zip(medicines, times):
-            print("Medicine:", med, "Time:", time)
+        conn = sqlite3.connect('healthcare.db')
+        c = conn.cursor()
+        for medicine, time in zip(medicines, times):
+            c.execute('INSERT INTO prescriptions (user_id, medicine, time) VALUES (?, ?, ?)', (user_id, medicine, time))
+        conn.commit()
+        conn.close()
+        return [medicines, times] #return html here
+    else:
+        return "hi"
 
-        # You can also store the data in the database or perform other operations
+# Route to delete a prescription
+@app.route('/prescriptions/<int:prescription_id>', methods=['DELETE'])
+def delete_prescription(prescription_id):
+    if 'user_id' not in session:
+        return redirect(url_for('login'))  # Redirect user to login page if not logged in
 
-        return jsonify({'message': 'Form submitted successfully'}), 200
+    conn = sqlite3.connect('healthcare.db')
+    c = conn.cursor()
+    c.execute('DELETE FROM prescriptions WHERE id=?', (prescription_id,))
+    conn.commit()
+    conn.close()
 
+    return redirect(url_for('prescriptions'))
+    
 if __name__ == '__main__':
     initialize_database()
     app.run(debug=True)
